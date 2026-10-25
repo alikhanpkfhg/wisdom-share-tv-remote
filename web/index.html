@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0b0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Wisdom Share Remote</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <h1>Wisdom Share <span>Remote</span></h1>
+  <div id="statusPill" class="pill offline"><span class="dot"></span><span id="statusText">Offline</span></div>
+</header>
+
+<section id="connectPanel" class="card">
+  <h2>Connect to TV</h2>
+  <button id="scanBtn" class="btn wide">Scan for TVs</button>
+  <div id="deviceList" class="devlist"></div>
+  <div class="manual">
+    <input id="ipInput" inputmode="decimal" autocapitalize="off" placeholder="TV IP e.g. 192.168.1.23">
+    <input id="portInput" inputmode="numeric" placeholder="Port (optional)">
+  </div>
+  <button id="connectBtn" class="btn primary wide">Connect</button>
+  <input id="tokenInput" type="password" placeholder="Bridge token (only if required)" class="hidden">
+  <p class="hint">Phone, bridge and TV must share the same Wi-Fi. Scanning uses the TV's <code>_share._tcp</code> mDNS advertisement.</p>
+</section>
+
+<main id="remotePanel" class="hidden">
+  <div class="row">
+    <button class="key small" data-code="26" title="Power">⏻</button>
+    <button class="key small" data-code="178">Input</button>
+    <button class="key small" data-code="82">Menu</button>
+  </div>
+
+  <div class="dpad">
+    <button class="key" data-code="19" data-repeat style="grid-area:u" aria-label="Up">▲</button>
+    <button class="key" data-code="21" data-repeat style="grid-area:l" aria-label="Left">◀</button>
+    <button class="key ok" data-code="23" style="grid-area:o" aria-label="OK">OK</button>
+    <button class="key" data-code="22" data-repeat style="grid-area:r" aria-label="Right">▶</button>
+    <button class="key" data-code="20" data-repeat style="grid-area:d" aria-label="Down">▼</button>
+  </div>
+
+  <div class="row">
+    <button class="key small" data-code="4">Back</button>
+    <button class="key small" data-code="3">Home</button>
+  </div>
+
+  <div class="row">
+    <button class="key vol" data-code="25" data-repeat>Vol −</button>
+    <button class="key vol exp" data-code="164" title="Experimental: standard Android mute keycode, not yet proven on this TV">Mute</button>
+    <button class="key vol" data-code="24" data-repeat>Vol +</button>
+  </div>
+
+  <div class="row">
+    <button class="key small exp" data-code="126" title="Experimental media key">Play</button>
+    <button class="key small exp" data-code="127" title="Experimental media key">Pause</button>
+    <button class="key small" id="kbdBtn">Keyboard</button>
+  </div>
+
+  <div class="row">
+    <button class="key small hidden" id="voiceBtn" title="Voice control (experimental, browser speech recognition)">Voice</button>
+    <button class="key small danger" id="disconnectBtn">Disconnect</button>
+  </div>
+  <p class="hint center">Buttons marked <code>exp</code> use standard Android keycodes that the original app carries but does not place on buttons — test them one at a time.</p>
+</main>
+
+<section id="kbdSheet" class="card hidden">
+  <h2>Text input</h2>
+  <textarea id="kbdText" rows="2" maxlength="500" placeholder="Type to enter on the TV"></textarea>
+  <div class="row">
+    <button class="btn primary grow" id="kbdSend">Send</button>
+    <button class="btn ghost" id="kbdClose">Close</button>
+  </div>
+  <p class="hint">Sends KEYBOARD_INPUT_EVENT exactly as the official app does.</p>
+</section>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="voice.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

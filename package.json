@@ -1,0 +1,14 @@
+{
+  "name": "wisdom-share-tv-remote",
+  "version": "1.0.0",
+  "description": "Web remote for Wisdom Share (Bytello) TVs: reverse-engineered protocol bridge + mobile web UI",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node bridge/server.js",
+    "test": "node --test test/proto.test.js test/validate.test.js"
+  }
+}
