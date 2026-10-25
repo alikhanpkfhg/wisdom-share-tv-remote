@@ -51,7 +51,12 @@ Record each result as VERIFIED / FAILED / NO-RESPONSE in the table below.
 | Text input (5) | pending | |
 | App open | pending | |
 
-## 4. AI voice phase tests (after real-TV basics pass)
+## 4. Android app tests
+
+- **Build/protocol tests (CI, free GitHub Actions runner):** `gradle testDebugUnitTest` runs the Kotlin golden-byte suite (`ProtoTest`) — the same wire-format assertions as the JS suite — plus keycode-whitelist tests (`KeyCodesTest`). The workflow then runs `assembleDebug` and uploads the debug APK as an artifact. Test job green = encoder and validation proven; TV acceptance still unproven.
+- **Real-TV tests (user's Android phone on home Wi-Fi):** follow `docs/android-guide.md` — install the APK, Scan → Connect → **Back** tap first, then each button individually, noting results in the table above. No bridge needed on Android; the app speaks to the TV directly, exactly like the official app.
+
+## 5. AI voice phase tests (after real-TV basics pass)
 
 - Speech recognition produces text on the phone (Safari: on-device dictation; verify mic permission prompt).
 - Grammar mapping unit table: "volume up/down", "mute", "press OK", "go back", "open <app>" (with confirmation), unknown → explicit rejection.

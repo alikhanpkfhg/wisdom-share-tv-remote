@@ -1,12 +1,20 @@
 # Wisdom Share TV Remote
 
-An original, evidence-based web replacement for the Wisdom Share (Bytello) phone remote.
+An original, evidence-based replacement for the Wisdom Share (Bytello) phone remote.
 
-- **Discovery** — mDNS/DNS-SD browse of `_share._tcp` on the home Wi-Fi (or manual IP entry).
-- **Transport** — the TV speaks a WebSocket protocol carrying **binary protobuf** commands; this repo implements it faithfully in a small Node bridge that the phone browser talks to.
-- **Web UI** — mobile-first, dark, touch-friendly remote (D-pad, back/home/menu, volume, power, input, text input, media keys).
+- **Android app** (primary): native Kotlin app that discovers the TV over mDNS and sends the recovered protobuf commands **directly** over Wi-Fi — no bridge needed. Debug APK is built by CI (Actions tab → latest "Android CI" run → artifact). Guide: `docs/android-guide.md`.
+- **Web remote** (iPhone-friendly): mobile-first dark UI served by a small Node bridge that speaks the TV's WebSocket protocol for the phone's browser.
+- **Documented protocol**: mDNS `_share._tcp` discovery, TV HTTP/WebSocket ports, binary protobuf messages, verified keycodes — all with source-level evidence and confidence labels.
 
-## Quickstart
+## Quickstart (Android)
+
+```sh
+# CI builds it for you: Actions tab → "Android CI (tests + debug APK)" → Artifacts → wisdom-remote-debug-apk
+```
+
+Install `app-debug.apk` on an Android 5.0+ phone on the TV's Wi-Fi, open the app, tap **Scan**, pick the TV, **Connect**, and try **Back** first. Full steps: `docs/android-guide.md`.
+
+## Quickstart (web, any phone browser)
 
 Prerequisites: Node.js 18+ (developed on Node 22), any laptop or Raspberry Pi on the **same Wi-Fi** as the TV.
 
@@ -21,7 +29,7 @@ Then open `http://<bridge-machine-ip>:8787` on your phone and:
 2. Tap **Connect** — the bridge opens the TV's WebSocket (`ws://<tv-ip>:<port>`).
 3. Use the remote. Status, errors and reconnection are shown in the UI.
 
-Running the bridge on the same phone as the browser is not possible in a plain browser app; a tiny always-on machine (laptop, Pi, old Android with Termux) is the practical host. See `docs/architecture.md`.
+A hosted preview lives at https://alikhanpkfhg.github.io/wisdom-share-tv-remote/ — because browsers block HTTPS pages from reaching local networks, the working web remote is always the bridge's own address. Running the bridge on the same phone as the browser is not possible in a plain browser app; see `docs/architecture.md`.
 
 ## Repository layout
 

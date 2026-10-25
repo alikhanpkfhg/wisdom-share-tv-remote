@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Wisdom Share Remote</string>
+    <string name="exp_hint">Buttons marked ~ use standard Android keycodes the original app carries but does not place on buttons — test one at a time.</string>
+</resources>
