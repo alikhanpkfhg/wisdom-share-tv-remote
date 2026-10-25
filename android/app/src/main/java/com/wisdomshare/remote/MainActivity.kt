@@ -1,6 +1,8 @@
 // The remote screen. Discovery → connect → protobuf key events over the TV's
 // WebSocket. Experimental keys are labelled with "~" in the layout.
 
+package com.wisdomshare.remote
+
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper

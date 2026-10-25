@@ -3,6 +3,8 @@
 // JSON ResultBody text frames in, auto-reconnect with backoff. This mirrors
 // the original app's WebClient (e/i/b/e/g/h.java).
 
+package com.wisdomshare.remote
+
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response

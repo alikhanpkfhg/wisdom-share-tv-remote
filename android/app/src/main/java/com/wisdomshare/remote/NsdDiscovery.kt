@@ -3,6 +3,8 @@
 // SRV port + host, read TXT attributes (device_mac, device_name, device_code,
 // device_ip, http_port, websocket_port).
 
+package com.wisdomshare.remote
+
 import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
@@ -51,8 +53,9 @@ class NsdDiscovery(private val context: Context) {
         discoveryListener = dl
         try {
             if (Build.VERSION.SDK_INT >= 34) {
-                // Android 14 requires the executor variants; use the app's main executor.
-                nsd.discoverServices("_share._tcp.", NsdManager.PROTOCOL_TYPE_DNS_SD, callbackExecutor(), dl)
+                // Android 14 requires the executor variants and rejects the legacy
+                // calls on apps targeting 34; pass a null Network to scan all networks.
+                nsd.discoverServices("_share._tcp.", NsdManager.PROTOCOL_TYPE_DNS_SD, null, callbackExecutor(), dl)
             } else {
                 @Suppress("DEPRECATION")
                 nsd.discoverServices("_share._tcp.", NsdManager.PROTOCOL_TYPE_DNS_SD, dl)
@@ -89,7 +92,7 @@ class NsdDiscovery(private val context: Context) {
         }
         try {
             if (Build.VERSION.SDK_INT >= 34) {
-                nsd.resolveService(info, callbackExecutor(), rl)
+                nsd.resolveService(info, null, callbackExecutor(), rl)
             } else {
                 @Suppress("DEPRECATION")
                 nsd.resolveService(info, rl)

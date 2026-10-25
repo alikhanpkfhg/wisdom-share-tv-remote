@@ -2,6 +2,8 @@
 // Expected layouts are taken from the decompiled GeneratedMessageLite
 // serializers of com.stark.bytelloremote 6.4.1.0.
 
+package com.wisdomshare.remote
+
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Test

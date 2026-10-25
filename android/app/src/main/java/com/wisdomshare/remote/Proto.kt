@@ -9,6 +9,8 @@
 //                               zero values omitted
 //   field 4  bytes    payload  — omitted when empty (voice audio)
 
+package com.wisdomshare.remote
+
 object Proto {
     const val EVENT = 0
     const val KEY_EVENT = 1

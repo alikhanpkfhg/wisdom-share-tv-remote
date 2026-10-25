@@ -3,6 +3,8 @@
 // CONFIRMED; everything else is EXPERIMENTAL (framework-standard codes the
 // TV most likely accepts but not yet proven).
 
+package com.wisdomshare.remote
+
 object KeyCodes {
     val NAMES: Map<Int, String> = mapOf(
         3 to "HOME",
