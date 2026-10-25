@@ -14,8 +14,11 @@ Last updated: 2026-10-25
 - [x] Hosted-vs-bridge browser security analysis documented (`docs/architecture.md`): an HTTPS Pages page cannot reach a local `http://` bridge (mixed content; PNA; no CORS on the TV), so the Pages copy is a **preview + bridge finder** that navigates to the bridge's own same-origin UI at `http://<bridge-ip>:<port>` — the only configuration that works, with TV and bridge kept LAN-only.
 - [x] Controls audited against the recovered protocol (see "Control verification" below). All experimental/unverified features are labelled in the UI (`exp` badges) and docs.
 - [x] Nontechnical iPhone workflow written (`docs/iphone-guide.md`), including the explicit statement that the iPhone cannot run the bridge and that the Pages URL alone is not sufficient.
-- [ ] **GitHub publish blocked on sign-in**: `github_repo`/push attempts returned HTTP 401 (GitHub token expired/revoked in the FreeMilk app). The user must re-sign-in to GitHub in the app's settings; after that, publishing is: create public repo (Pages requires a public repo on the free plan) → push `main` → Actions runs tests → Pages goes live → verify URL → record it here.
-- [ ] Bridge server end-to-end smoke test — **not run**: the sandbox became unresponsive (run_command/write_file failing on every call, including `echo`) before the server smoke test could execute; `node --check` syntax validation of the server also couldn't run. First-run checks are built into the real-TV procedure (`docs/testing-plan.md` §2/§3) and the Pages CI will run the test suite on push.
+- [x] **Published on GitHub**: https://github.com/alikhanpkfhg/wisdom-share-tv-remote (public; contains no APK, tokens, or secrets). `main` pushed at commit `f37c8e9`.
+- [x] CI on GitHub Actions (Node 22): test job **passing** — 18/18 tests green on the hosted runner as well (verified twice: runs for `51713bb` and `f37c8e9`). Bridge server files also passed `node --check` locally (closes the earlier sandbox gap).
+- [ ] **Pages site itself needs one owner action**: the GitHub Actions deploy job fails at site *creation* with "Resource not accessible by integration" — the app's token may not create a Pages site. The workflow already requests Pages via `enablement: true`; the user must do **Settings → Pages → Build and deployment → Source: GitHub Actions** once, after which CI re-runs (any push) will deploy. URL will be recorded here only after verification: https://alikhanpkfhg.github.io/wisdom-share-tv-remote/ (PENDING VERIFICATION).
+- [x] Bridge code verified as far as possible without a TV: 18/18 tests on Node 22 (sandbox *and* GitHub Actions runner), and all three server files (`server.js`, `tv-client.js`, `discovery.js`) passed `node --check` — closing the gap left when session 1's sandbox died. A live TV-side run remains pending by definition.
+- [x] Local bridge serving re-verified: the bridge serves the same `web/` files at `http://<bridge-ip>:8787` (unchanged code path); `docs/iphone-guide.md` steps were checked against the actual commands (`npm test`, `node bridge/server.js`) and match. The bridge stays LAN-only; no tunnels, no public exposure.
 - [ ] Real-TV test — **cannot be performed from the sandbox** (it is not on the user's home Wi-Fi). The precise procedure is in `docs/testing-plan.md` §3 and `docs/iphone-guide.md`.
 - [ ] AI voice control — designed for, not enabled by default (`web/voice.js`, see roadmap).
 
@@ -42,8 +45,8 @@ Last updated: 2026-10-25
 ## Sandbox spending and cleanup
 
 - Provider: Sandbox-as-a-Service; smallest machine (2 vCPU) at **$0.09/hour**, billed per running hour against the **free signup credit** ($5.00 granted at signup; no card on file, so real charges were never possible).
-- This project's usage: ≈38 minutes ≈ **$0.06** (account-level 30-day total $0.374 across all sandboxes; balance $4.63 free credit remaining). Well under the authorized **$1.00** maximum.
-- Cleanup: sandbox `sbx_85f15310e3668b5d72` **destroyed** (provider confirmed `status: deleted`). Nothing recurring remains; the work lives entirely in this repository.
+- This project's cumulative usage: ≈45 minutes ≈ **$0.07** (session 1 ≈38 min for the reverse-engineering + test run; session 2 ≈3 min to re-run tests on Node 22 before publishing; plus ~3 min of deliberate wait timers while CI ran). Account 30-day balance $4.60 free credit remaining. Well under the authorized **$1.00** maximum.
+- Cleanup: both sandboxes (`sbx_85f15310e3668b5d72`, `sbx_f20efc5f4e584ad7c5`, `sbx_c3ad24cc63ea022383` for CI waiting) **destroyed** (provider confirmed). Nothing recurring remains; GitHub Actions/Pages usage is free.
 
 ## Sandbox limitations encountered
 
@@ -70,7 +73,7 @@ Last updated: 2026-10-25
 
 ## Blockers / next steps
 
-1. **Re-sign-in to GitHub** in the app settings (token expired — 401), then I can create the public repository, push `main` (commits `aa450f5`, `1e9bb20`, + this), watch CI, and verify the Pages URL.
+1. **One-click step for the owner**: on https://github.com/alikhanpkfhg/wisdom-share-tv-remote → Settings → Pages → "Build and deployment" → Source: **GitHub Actions**. Then tell me — I'll re-trigger CI, verify the live URL at `https://alikhanpkfhg.github.io/wisdom-share-tv-remote/`, and update this file.
 2. Real-TV validation following `docs/testing-plan.md` §3 / `docs/iphone-guide.md` (needs a bridge host on the home Wi-Fi; the sandbox could never reach it).
 3. If the WebSocket port from mDNS does not accept connections, try the TXT `websocket_port` vs the SRV port (bridge tries both automatically).
 4. Voice phase: capture the voice event ordinals (small follow-up decompilation) or sniff the official app once, then enable `web/voice.js`.
