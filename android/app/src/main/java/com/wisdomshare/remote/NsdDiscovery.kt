@@ -55,10 +55,12 @@ class NsdDiscovery(private val context: Context) {
             if (Build.VERSION.SDK_INT >= 34) {
                 // Android 14 requires the executor variants and rejects the legacy
                 // calls on apps targeting 34; pass a null Network to scan all networks.
-                nsd.discoverServices("_share._tcp.", NsdManager.PROTOCOL_TYPE_DNS_SD, null, callbackExecutor(), dl)
+                // Protocol type value 3 = NsdManager.PROTOCOL_TYPE_DNS_SD in AOSP
+                // (the constant is not resolvable from the API-34 compile stubs).
+                nsd.discoverServices("_share._tcp.", 3, null, callbackExecutor(), dl)
             } else {
                 @Suppress("DEPRECATION")
-                nsd.discoverServices("_share._tcp.", NsdManager.PROTOCOL_TYPE_DNS_SD, dl)
+                nsd.discoverServices("_share._tcp.", 3, dl) // 3 = PROTOCOL_TYPE_DNS_SD
             }
         } catch (e: Exception) {
             onError(e.message ?: "discovery error")
@@ -92,7 +94,9 @@ class NsdDiscovery(private val context: Context) {
         }
         try {
             if (Build.VERSION.SDK_INT >= 34) {
-                nsd.resolveService(info, null, callbackExecutor(), rl)
+                // API-34 resolve executor overload takes no Network parameter
+                // (unlike discoverServices).
+                nsd.resolveService(info, callbackExecutor(), rl)
             } else {
                 @Suppress("DEPRECATION")
                 nsd.resolveService(info, rl)
