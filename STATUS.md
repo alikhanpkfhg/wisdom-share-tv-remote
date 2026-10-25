@@ -16,7 +16,7 @@ Last updated: 2026-10-25
 - [x] Nontechnical iPhone workflow written (`docs/iphone-guide.md`), including the explicit statement that the iPhone cannot run the bridge and that the Pages URL alone is not sufficient.
 - [x] **Published on GitHub**: https://github.com/alikhanpkfhg/wisdom-share-tv-remote (public; contains no APK, tokens, or secrets). `main` pushed at commit `f37c8e9`.
 - [x] CI on GitHub Actions (Node 22): test job **passing** — 18/18 tests green on the hosted runner as well (verified twice: runs for `51713bb` and `f37c8e9`). Bridge server files also passed `node --check` locally (closes the earlier sandbox gap).
-- [ ] **Pages site itself needs one owner action**: the GitHub Actions deploy job fails at site *creation* with "Resource not accessible by integration" — the app's token may not create a Pages site. The workflow already requests Pages via `enablement: true`; the user must do **Settings → Pages → Build and deployment → Source: GitHub Actions** once, after which CI re-runs (any push) will deploy. URL will be recorded here only after verification: https://alikhanpkfhg.github.io/wisdom-share-tv-remote/ (PENDING VERIFICATION).
+- [x] **Live site verified**: after the owner set Pages source to GitHub Actions, the workflow was re-run and both jobs passed (`test` 9s, `deploy-pages` 13s, checks for `bd58151`). The live page loads at **https://alikhanpkfhg.github.io/wisdom-share-tv-remote/** and assets resolve under the repository subpath (e.g. `/wisdom-share-tv-remote/app.js` serves the full script). The hosted copy is the preview/bridge-finder; the working remote remains the bridge's same-origin UI at `http://<bridge-ip>:8787`.
 - [x] Bridge code verified as far as possible without a TV: 18/18 tests on Node 22 (sandbox *and* GitHub Actions runner), and all three server files (`server.js`, `tv-client.js`, `discovery.js`) passed `node --check` — closing the gap left when session 1's sandbox died. A live TV-side run remains pending by definition.
 - [x] Local bridge serving re-verified: the bridge serves the same `web/` files at `http://<bridge-ip>:8787` (unchanged code path); `docs/iphone-guide.md` steps were checked against the actual commands (`npm test`, `node bridge/server.js`) and match. The bridge stays LAN-only; no tunnels, no public exposure.
 - [ ] Real-TV test — **cannot be performed from the sandbox** (it is not on the user's home Wi-Fi). The precise procedure is in `docs/testing-plan.md` §3 and `docs/iphone-guide.md`.
@@ -73,7 +73,6 @@ Last updated: 2026-10-25
 
 ## Blockers / next steps
 
-1. **One-click step for the owner**: on https://github.com/alikhanpkfhg/wisdom-share-tv-remote → Settings → Pages → "Build and deployment" → Source: **GitHub Actions**. Then tell me — I'll re-trigger CI, verify the live URL at `https://alikhanpkfhg.github.io/wisdom-share-tv-remote/`, and update this file.
-2. Real-TV validation following `docs/testing-plan.md` §3 / `docs/iphone-guide.md` (needs a bridge host on the home Wi-Fi; the sandbox could never reach it).
-3. If the WebSocket port from mDNS does not accept connections, try the TXT `websocket_port` vs the SRV port (bridge tries both automatically).
-4. Voice phase: capture the voice event ordinals (small follow-up decompilation) or sniff the official app once, then enable `web/voice.js`.
+1. **Real-TV validation** following `docs/testing-plan.md` §3 / `docs/iphone-guide.md` (needs a bridge host on the home Wi-Fi; the sandbox could never reach it). No TV response is claimed anywhere until the first Back-tap test succeeds.
+2. If the WebSocket port from mDNS does not accept connections, try the TXT `websocket_port` vs the SRV port (bridge tries both automatically).
+3. Voice phase: capture the voice event ordinals (small follow-up decompilation) or sniff the official app once, then enable `web/voice.js`.
