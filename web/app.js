@@ -43,9 +43,14 @@ async function pollStatus() {
   try {
     st = await api('/api/status');
   } catch (e) {
-    setStatus('offline', 'Bridge unreachable');
+    const hosted = isHosted();
+    setStatus('offline', hosted ? 'Hosted preview' : 'Bridge unreachable');
+    $('connectPanel').classList.toggle('hidden', hosted);
+    showHostedBanner(hosted);
     return;
   }
+  $('connectPanel').classList.remove('hidden');
+  showHostedBanner(false);
   if (st.connected) {
     setStatus('online', st.device && st.device.name ? st.device.name : 'Connected');
     $('connectPanel').classList.add('hidden');
@@ -55,6 +60,30 @@ async function pollStatus() {
     $('remotePanel').classList.add('hidden');
     $('connectPanel').classList.remove('hidden');
   }
+}
+
+// Hosted (HTTPS) copies of this page — e.g. GitHub Pages — cannot call a local
+// http:// bridge because browsers block mixed content. The working setup is to
+// open the bridge's own address, where this same UI is served same-origin.
+// Details: docs/architecture.md, section "Hosted frontend vs local bridge".
+function isHosted() {
+  return location.protocol === 'https:';
+}
+
+function showHostedBanner(show) {
+  $('hostedBanner').classList.toggle('hidden', !show);
+}
+
+function goBridge() {
+  const host = $('bridgeHostInput').value.trim();
+  const port = $('bridgePortInput').value.trim() || '8787';
+  if (!/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.test(host)) {
+    toast('Enter the bridge machine’s IPv4 address', true);
+    return;
+  }
+  const url = 'http://' + host + ':' + port + '/';
+  localStorage.setItem('lastBridgeUrl', url);
+  location.href = url;
 }
 
 function startPolling() {
@@ -146,6 +175,15 @@ function bindKeys() {
 function bindChrome() {
   $('scanBtn').onclick = scan;
   $('connectBtn').onclick = connect;
+  $('bridgeGoBtn').onclick = goBridge;
+  const last = localStorage.getItem('lastBridgeUrl');
+  if (last) {
+    const m = last.match(/http:\/\/([^:]+):(\d+)/);
+    if (m) {
+      $('bridgeHostInput').value = m[1];
+      $('bridgePortInput').value = m[2];
+    }
+  }
   $('disconnectBtn').onclick = async () => {
     try {
       await api('/api/disconnect', {});

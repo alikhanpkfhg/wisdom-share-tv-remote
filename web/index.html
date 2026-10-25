@@ -77,6 +77,17 @@
   <p class="hint">Sends KEYBOARD_INPUT_EVENT exactly as the official app does.</p>
 </section>
 
+<section id="hostedBanner" class="card hidden">
+  <h2>Preview only — connect via your bridge</h2>
+  <p class="hint">This page is hosted on GitHub Pages (HTTPS). Browsers block HTTPS pages from talking to a local <code>http://</code> bridge (mixed-content security), so the buttons on this page cannot reach your home network. The remote works when the <em>bridge itself</em> serves this same page over your Wi-Fi.</p>
+  <div class="manual">
+    <input id="bridgeHostInput" inputmode="decimal" autocapitalize="off" placeholder="Bridge IP, e.g. 192.168.1.50">
+    <input id="bridgePortInput" inputmode="numeric" placeholder="Port (8787)">
+  </div>
+  <button id="bridgeGoBtn" class="btn primary wide">Open the bridge remote</button>
+  <p class="hint">The bridge must be running on a device that shares the TV's Wi-Fi. Step-by-step guide: <code>docs/iphone-guide.md</code>.</p>
+</section>
+
 <div id="toast" class="toast hidden"></div>
 
 <script src="voice.js"></script>

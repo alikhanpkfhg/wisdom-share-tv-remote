@@ -1,5 +1,23 @@
 # Architecture
 
+## Hosted frontend (GitHub Pages) vs the local bridge
+
+The project is published as a static site on GitHub Pages, but the Pages copy **cannot** drive the TV. The browser security model forbids it:
+
+| Restriction | Consequence |
+|---|---|
+| Mixed content | A `https://` Pages page is blocked from calling the bridge's `http://<lan-ip>:8787` API and `ws://<lan-ip>` sockets. Non-negotiable in Safari and Chrome. |
+| Private Network Access | Even without mixed content, Chrome requires the local server to answer a special CORS preflight (`Access-Control-Allow-Private-Network`); the TV answers no CORS headers at all. |
+| Secure context / mDNS | `webkitResolveLocalWebResources`, multicast UDP and raw sockets are unavailable to web pages, so browser-only discovery is impossible. |
+| CORS | The bridge deliberately sends no CORS headers; it is meant to be opened same-origin at `http://<bridge-ip>:8787`, which needs no CORS. |
+
+Therefore the deployment is deliberately split:
+
+- **GitHub Pages** (public, HTTPS): preview of the UI, project documentation, and a "bridge finder" — the user types their bridge's IP and the page navigates to `http://<bridge-ip>:8787`, which is a plain HTTP LAN page that Safari happily opens.
+- **The bridge itself** serves the identical UI **same-origin** over the LAN. This is the only configuration that works, and it requires the bridge host to be on the home Wi-Fi. The TV and bridge stay LAN-only; nothing is tunneled to the internet.
+
+**Practical result:** the URL to use daily is the bridge's own `http://<bridge-ip>:8787`. The Pages URL is documentation/preview. If the bridge cannot run anywhere, the remote cannot work — that limitation is stated in the iPhone guide rather than papered over.
+
 ## Why a bridge
 
 A browser tab cannot speak the TV's protocol directly:
